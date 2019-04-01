@@ -5,8 +5,8 @@ var router = express.Router();
 var multer  = require('multer')
 
 
-var upload = multer({ dest: '/upload/image' })
-
+var store = multer.diskStorage({ destination: './public/upload/',filename: function(req,file,cb){cb(null,file.fieldname+'-'+Date.now()+path.extname(file.originalname));} });
+const upload = multer({storage:store}).single('uploadfile');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index',{title: 'KBA'});
@@ -25,9 +25,12 @@ router.get('/login',function(req, res, next) {
     console.log(filename+"***"+uploadStatus+"////////////////////////////////");
 });
 
-router.post('/upload/image',upload.single('uploadfile'),function(req,res,next){
+/*router.post('/upload',function(req,res,next){
   console.log('image file running ......................................');
-
+  console.log("------------------"+req.files.uploadfile+"-----------------------------");
+  console.log("------------------"+req.file.uploadfile+"-----------------------------");
+  console.log("------------------"+req.file+"-----------------------------");
+  console.log("------------------"+req.files+"-----------------------------");
   if (req.file) {
         console.log('Uploading file...');
         var filename = req.file.filename;
@@ -38,10 +41,10 @@ router.post('/upload/image',upload.single('uploadfile'),function(req,res,next){
         var filename = 'FILE NOT UPLOADED';
         var uploadStatus = 'File Upload Failed';
     } 
-    
+    res.send(filename+"***"+uploadStatus+"////////////////////////////////");
  console.log(filename+"***"+uploadStatus+"////////////////////////////////");
 
-});
+});*/
 
 router.get("/image.png", (req, res) => {
   res.sendFile(path.join(__dirname, "./uploads/test.txt"));
