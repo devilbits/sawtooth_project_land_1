@@ -25,6 +25,9 @@ WORKDIR /project/sawtooth-helloworld/helloworldClient
 
 CMD npm install && npm start
 
+
 EXPOSE 3000
+EXPOSE 5001
+
 
 

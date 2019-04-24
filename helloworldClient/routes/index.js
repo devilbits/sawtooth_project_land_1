@@ -1,55 +1,32 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var { UserClient } = require('./UserClient')
+var { UserClient } = require('./UserClient');
 var router = express.Router();
-var multer  = require('multer')
+var IPFS = require('ipfs-http-client');
+var ipfs = IPFS('127.0.0.1','5001',{protocol:"http"});
 
 
-var store = multer.diskStorage({ destination: './public/upload/',filename: function(req,file,cb){cb(null,file.fieldname+'-'+Date.now()+path.extname(file.originalname));} });
-const upload = multer({storage:store}).single('uploadfile');
-/* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index',{title: 'KBA'});
 });
 
+router.post('/upload',function(req,res,next){
+	data = req.files.uploadfile.data;
+	console.log(data);
 
-router.get('/login',function(req, res, next) {
-//router.get('/login',function(req, res, next) {  
-  var dat1 = req.body.test;
-  console.log('********************************'+dat1);
 
-    
-    res.render('index',{title: 'KBA' });
-
-   //res.render('index',{title: 'KBA'});
-    console.log(filename+"***"+uploadStatus+"////////////////////////////////");
+	ipfs.add(data,(err,res1)=>
+		{ if(err){console.log(err);};
+		if(res1==undefined){console.log('not reading file');console.log('---------------------------------------------------------------');}
+		else{
+		 console.log('hash is:'+JSON.stringify(res1[0]));
+		var client = new UserClient();
+		client.send_data([res1[0].hash]);
+		res.send('hash='+res1[0].hash+'added succesfully');
+			
+	} 
+		});		
 });
-
-/*router.post('/upload',function(req,res,next){
-  console.log('image file running ......................................');
-  console.log("------------------"+req.files.uploadfile+"-----------------------------");
-  console.log("------------------"+req.file.uploadfile+"-----------------------------");
-  console.log("------------------"+req.file+"-----------------------------");
-  console.log("------------------"+req.files+"-----------------------------");
-  if (req.file) {
-        console.log('Uploading file...');
-        var filename = req.file.filename;
-        var uploadStatus = 'File Uploaded Successfully';
-
-    } else {
-        console.log('No File Uploaded');
-        var filename = 'FILE NOT UPLOADED';
-        var uploadStatus = 'File Upload Failed';
-    } 
-    res.send(filename+"***"+uploadStatus+"////////////////////////////////");
- console.log(filename+"***"+uploadStatus+"////////////////////////////////");
-
-});*/
-
-router.get("/image.png", (req, res) => {
-  res.sendFile(path.join(__dirname, "./uploads/test.txt"));
-});
-
 
 router.post('/reg',function(req, res){
   var data1 = req.body.data1;
@@ -69,8 +46,5 @@ router.get('/state',async function(req,res){
   console.log("Data got from REST API", getData);
   getData.then(result => {res.send({ balance : result });});
 })
-
-
-
 
 module.exports = router;

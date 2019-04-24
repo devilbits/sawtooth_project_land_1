@@ -1,0 +1,14 @@
+FROM ubuntu:xenial
+
+CMD ipfs init
+
+CMD ipfs daemon
+
+EXPOSE 4001
+EXPOSE 5001
+EXPOSE 8080
+EXPOSE 8081
+
+
+
+

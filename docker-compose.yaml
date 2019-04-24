@@ -5,10 +5,11 @@ services:
 
   helloworld-client:
      container_name: helloworld-client
+    
      expose:
-       - 3000
+       - 3000      
      ports:
-       - 3000:3000
+       - '3000:3000'
      build:
        context: .
        dockerfile: helloworldClient/DockerFile
@@ -21,6 +22,7 @@ services:
 
   helloworldprocessor:
     container_name: helloworldprocessor
+    
     build:
       context: .
       dockerfile: helloworldprocessor/DockerFile
@@ -45,15 +47,18 @@ services:
     entrypoint: |
       sawtooth-rest-api -vvv
         --connect tcp://validator:4004
+        --connect tcp://localhost:5001
         --bind sawtooth-rest-api:8008
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:1.0
+    
     depends_on:
       - validator
     command: settings-tp -vv --connect tcp://validator:4004
   validator:
     container_name: validator
     image: hyperledger/sawtooth-validator:1.0
+    
     expose:
       - 4004
     ports:
@@ -69,6 +74,18 @@ services:
         sawtooth-validator -vvv \
           --endpoint tcp://validator:8800 \
           --bind component:tcp://eth0:4004 \
-          --bind network:tcp://eth0:8800
-      "
-  
+          --bind network:tcp://eth0:8800 "
+  ipfs:
+      expose:
+        - 5001
+        - 4001
+        - 8080
+        - 8081
+      ports:
+        - '5001:5001'
+        - '4001:4001'
+        - '8080:8080'
+        - '8081:8081'
+      build:
+         context: .
+         dockerfile: ipfs/DockerFile
