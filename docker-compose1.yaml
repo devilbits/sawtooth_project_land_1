@@ -5,7 +5,7 @@ services:
 
   helloworld-client:
      container_name: helloworld-client
-     network_mode: host
+
      build:
        context: .
        dockerfile: helloworldClient/DockerFile

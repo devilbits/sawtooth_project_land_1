@@ -55,6 +55,20 @@ services:
     depends_on:
       - validator
     command: settings-tp -vv --connect tcp://validator:4004
+  
+  ipfs:
+      expose:
+        - 5001
+        - 4001
+        - 8080
+        - 8081
+      ports:
+        - 5001:5001
+      build:
+         context: .
+         dockerfile: ipfs/DockerFile
+
+
   validator:
     container_name: validator
     image: hyperledger/sawtooth-validator:1.0
@@ -75,17 +89,5 @@ services:
           --endpoint tcp://validator:8800 \
           --bind component:tcp://eth0:4004 \
           --bind network:tcp://eth0:8800 "
-  ipfs:
-      expose:
-        - 5001
-        - 4001
-        - 8080
-        - 8081
-      ports:
-        - '5001:5001'
-        - '4001:4001'
-        - '8080:8080'
-        - '8081:8081'
-      build:
-         context: .
-         dockerfile: ipfs/DockerFile
+
+  
