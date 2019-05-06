@@ -6,35 +6,54 @@
 <h1>Land registration</h1>
 <div class="form-modal">
  
-    <div class="form-toggle">
-        <button id="man-toggle" onclick="toggleMan()">Land registration login</button>
-       
-    </div>
  
    
  
     <div>
-        <form action='/login' method='get'>
-            <input id="textInput1" type="text" placeholder="Enter Username" />
+        <form action="/regstr" method="GET">
+            
             <table>
                         <tr>
-                            <td><input id="textInput2" type="text" placeholder="Password"/></td>
                            
+                            <th><button class="btn signup" id="registrar">Registrar</button></th>
+
                         </tr>
                        
+                        <tr>
+                            <td><input type="text" id="pvtkey" placeholder="enter your private key"></td></tr>
+                         <tr><td> <button type="button"  class="btn signup" onclick= "writereg(event)" >Submit</button></td>
+                        </tr>
+
+
+                    </table></form><hr>    
+         
+        <form action="/usr" method="GET"><table>                <tr>
+
+                              <th><button  class="btn signup" id="user">User</button></th></tr>
+                            </tr><td><input type="text" id="usrpvtkey" placeholder="enter your private key"></td></tr>
+                            <tr><td><input type="text" id="adhar" placeholder="enter your adhar number"></td></tr>
+                            <tr><td><input type="text" id="name" placeholder="enter your name"></td></tr>
+                            <tr><td><button type="submit"  class="btn signup" onclick= "writeusr(event)" > Submit</button></td>
+                        </tr>    
+
                        
                     </table>
-            <button type="submit" class="btn signup">submit</button>
+            
            
            
         </form>
     </div>
  
 </div>
- 
- 
- 
- 
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js">
 </script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src='/javascripts/main.js'></script>
+ 
+ <script>
+
+
+ $('#user').click(function(){$("#usr").css("display", "inline");});
+ $('#registrar').click(function(){$('#regstr').css("display", "block");});
+</script>

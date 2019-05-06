@@ -10,7 +10,7 @@ var fs   = require('fs');
 var app = express();
 
 router.get('/', function(req, res, next) {
-  res.render('index',{title: 'landReg'});
+  res.render('index1',{title: 'landReg'});
 });
 
 
@@ -77,6 +77,40 @@ router.post('/state1',async function(req,res){
   res.send(JSON.stringify(data));
 
 })
+
+
+router.post('/regstr',(req,res)=>{
+  var key = req.body.key; 
+  var client = new UserClient(key);
+  console.log('log in as a registrar')
+  res.send({msg:"registrat"});
+
+})
+router.post('/usr',(req,res)=>{
+ var key = req.body.key; 
+ var no = req.body.no; 
+ var name = req.body.name; 
+ var client = new UserClient(key);
+ client.send_data([no,name]);
+ console.log('log in as a user');
+ console.log('name:'+name);
+ res.send({name:name,id:no});
+})
+
+router.get('/usr',(req,res)=>{
+ var client = new UserClient(null);
+ let data1 = client.getData().then(data=>{console.log("data.data------"+JSON.stringify(data.data));
+  data = Buffer.from(data.data[0].data, 'base64').toString();
+  
+  console.log('state data====='+JSON.stringify(data));
+
+ console.log('getting user data');res.render('dash',{data:data})});
+  
+ //
+ 
+})
+
+
 
 
 module.exports = router;

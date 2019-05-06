@@ -25,3 +25,17 @@ function readmsg(event){
   },'json');
 }
  
+
+function writereg(event){
+    event.preventDefault();
+       const pvtkey = document.getElementById('pvtkey').value
+      $.post('/regstr',{key:pvtkey},'json');
+}
+
+function writeusr(event){
+    event.preventDefault();
+       const pvtkey = document.getElementById('usrpvtkey').value
+       const adhar_no = document.getElementById('adhar').value
+       const usr_name = document.getElementById('name').value
+      $.post('/usr',{key:pvtkey,no:adhar_no,name:usr_name},'json');
+}
