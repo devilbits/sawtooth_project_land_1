@@ -10,16 +10,18 @@ const {TextEncoder, TextDecoder} = require('text-encoding/lib/encoding')
 
 FAMILY_NAME='HelloWorld'
 
-privateKeyHex = "66ad89d0ff29b0267fba72ea8d40ef7975e10f8acde8d50d20cdf56ba9599c5e";
-
+//privateKeyHex = "66ad89d0ff29b0267fba72ea8d40ef7975e10f8acde8d50d20cdf56ba9599c5e";
+prkey = "";
 function hash(v) {
   return createHash('sha512').update(v).digest('hex');
 }
 
 class UserClient{
-  constructor(){
+  constructor(key1){
+    if(key1){prkey=key1;}
+    else if(key1==undefined | key1==null){key1=prkey;}
     const context = createContext('secp256k1');
-    const secp256k1pk = Secp256k1PrivateKey.fromHex(privateKeyHex.trim());
+    const secp256k1pk = Secp256k1PrivateKey.fromHex(key1.trim());
     this.signer = new CryptoFactory(context).newSigner(secp256k1pk);
     this.publicKey = this.signer.getPublicKey().asHex();
     this.address = hash("HelloWorld").substr(0, 6) + hash(this.publicKey).substr(0, 64);
@@ -111,6 +113,26 @@ async _send_to_rest_api(batchListBytes){
      } 
  }
 }
+
+ async getState (address, isQuery) {
+    let stateRequest = 'http://rest-api:8008/state';
+    if(address) {
+      if(isQuery) {
+        stateRequest += ('?address=')
+      } else {
+        stateRequest += ('/address/');
+      }
+      stateRequest += address;
+    }
+    let stateResponse = await fetch(stateRequest);
+    let stateJSON = await stateResponse.json();
+    return stateJSON;
+  }
+
+ async getData() {
+    let addr = hash("HelloWorld").substr(0, 6) + hash(this.publicKey).substr(0, 64);
+    return this.getState(addr, true);
+  }
 
 
 }module.exports.UserClient = UserClient;

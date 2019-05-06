@@ -18,11 +18,10 @@ function writemsg(event){
 
 function readmsg(event){
     event.preventDefault();
-    $.get('/state',  (data,textStatus,jqXHR) =>{
-        alert("your data is : " + data.balance[0]+" "+data.balance[1]+" "+data.balance[2])
-       /* document.getElementById("textInput1").value ="Your data is " + data.balance[0],
-document.getElementById("textInput2").value ="Your data is " + data.balance[1],
-document.getElementById("textInput3").value ="Your data is " + data.balance[2], 
-      */},'json');
+    //$.get('/state', (data,textStatus,jqXHR) =>{
+       const data1 = document.getElementById('textInput1').value
+      $.post('/state1',{data1:data1}, (data,textStatus,jqXHR) =>{
+       // alert("your data is : " + data.balance)
+  },'json');
 }
  

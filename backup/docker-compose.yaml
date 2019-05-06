@@ -5,6 +5,7 @@ services:
 
   helloworld-client:
      container_name: helloworld-client
+    
      expose:
        - 3000      
      ports:
@@ -16,8 +17,6 @@ services:
          - http_proxy
          - https_proxy
          - no_proxy
-     depends_on:
-         - ipfs 
      volumes:
          - '.:/project/sawtooth-helloworld'
 
@@ -48,13 +47,42 @@ services:
     entrypoint: |
       sawtooth-rest-api -vvv
         --connect tcp://validator:4004
+        --connect tcp://localhost:5001
         --bind sawtooth-rest-api:8008
   settings-tp:
-    image: hyperledger/sawtooth-settings-tp:1.0
     container_name: settings-tp
+    image: hyperledger/sawtooth-settings-tp:1.0
+    
     depends_on:
       - validator
     command: settings-tp -vv --connect tcp://validator:4004
+  
+  ipfs:
+      container_name: ipfs-swarm
+      expose:
+        - 5001
+        - 4001
+        - 8080
+        - 8081
+      ports:
+        - 5001:5001
+      build:
+         context: .
+         dockerfile: ipfs/DockerFile
+
+
+  ipfs_upload:
+      container_name: ipfs_upload_module
+      network_mode: host
+      expose:
+        - 4000
+      ports:
+        - 4000:4000
+      build:
+         context: ipfs-upload/
+         dockerfile: DockerFile
+     
+
   validator:
     container_name: validator
     image: hyperledger/sawtooth-validator:1.0
@@ -75,28 +103,5 @@ services:
           --endpoint tcp://validator:8800 \
           --bind component:tcp://eth0:4004 \
           --bind network:tcp://eth0:8800 "
-  ipfs:
-      container_name: ipfs-swarm
-      expose:
-        - 5001
-      ports:
-        - 5001:5001
-      build:
-         context: .
-         dockerfile: ipfs/DockerFile
 
-
-
-  ipfs_upload:
-      container_name: ipfs-uploader
-      network_mode: host
-      volumes:
-         - '.:/project/sawtooth-helloworld'
-
-      expose:
-        - 4000
-      ports:
-        - 4000:4000
-      build:
-         context: ipfs-upload/
-         dockerfile: DockerFile
+  

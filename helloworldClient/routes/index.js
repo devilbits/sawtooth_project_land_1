@@ -4,13 +4,18 @@ var { UserClient } = require('./UserClient');
 var router = express.Router();
 var IPFS = require('ipfs-http-client');
 var ipfs = IPFS('127.0.0.1','5001',{protocol:"http"});
+var fs   = require('fs');
 
+
+var app = express();
 
 router.get('/', function(req, res, next) {
-  res.render('index',{title: 'KBA'});
+  res.render('index',{title: 'landReg'});
 });
 
-router.post('/upload',function(req,res,next){
+
+
+/*router.post('/upload',function(req,res,next){
 	data = req.files.uploadfile.data;
 	console.log(data);
 
@@ -19,14 +24,21 @@ router.post('/upload',function(req,res,next){
 		{ if(err){console.log(err);};
 		if(res1==undefined){console.log('not reading file');console.log('---------------------------------------------------------------');}
 		else{
-		 console.log('hash is:'+JSON.stringify(res1[0]));
+		 console.log('ipfs data:'+JSON.stringify(res1[0]));
 		var client = new UserClient();
 		client.send_data([res1[0].hash]);
-		res.send('hash='+res1[0].hash+'added succesfully');
+        
+
+        var temp_hash="123test123";
+        var client = new UserClient();
+        client.send_data([temp_hash]);
+        
+
+		res.send('hash:test is added succesfully');
 			
 	} 
 		});		
-});
+});*/
 
 router.post('/reg',function(req, res){
   var data1 = req.body.data1;
@@ -35,16 +47,37 @@ router.post('/reg',function(req, res){
   var data4 = req.body.data4;
  var data = {data1:data1,data2:data2,data3:data3}
   console.log("Data sent to REST API", data1+" "+data2+" "+data3);
-  var client = new UserClient();
-  client.send_data([data]);
-  res.send({message: "Data " +data+" successfully added"});
+  var client = new UserClient(data1);
+  client.send_data([data1,data2,data3]);
+  
+  var text = fs.readFileSync('../ipfs-upload/test1','utf8')
+  console.log ("filehash////////////////////////"+text)
+
+
+  res.send({message: "Data " +data+" successfully added"+" .hash is "+text});
 })
 
 router.get('/state',async function(req,res){
-  var client = new UserClient();
+  var client = new UserClient(null);
   var getData = client._send_to_rest_api(null);
-  console.log("Data got from REST API", getData);
+  console.log("Data got from REST API", JSON.stringify(getData));
   getData.then(result => {res.send({ balance : result });});
 })
 
+router.post('/state1',async function(req,res){
+  var data1 = req.body.data1;  
+  var client = new UserClient(data1);
+   
+  let data = await client.getData();
+  console.log("data.data------"+JSON.stringify(data.data));
+  data = Buffer.from(data.data[0].data, 'base64').toString();
+  
+  console.log('state data====='+JSON.stringify(data));
+
+  res.send(JSON.stringify(data));
+
+})
+
+
 module.exports = router;
+
