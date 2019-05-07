@@ -5,9 +5,18 @@ var router = express.Router();
 var IPFS = require('ipfs-http-client');
 var ipfs = IPFS('127.0.0.1','5001',{protocol:"http"});
 var fs   = require('fs');
+const multer = require('multer');
+const path   = require('path');
 
-
-var app = express();
+ var storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, './uploads')
+  },
+  filename: function(req, file, callback) {
+    console.log(file)
+    callback(null,file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+});
 
 router.get('/', function(req, res, next) {
   res.render('index1',{title: 'landReg'});
@@ -26,15 +35,8 @@ router.get('/', function(req, res, next) {
 		else{
 		 console.log('ipfs data:'+JSON.stringify(res1[0]));
 		var client = new UserClient();
-		client.send_data([res1[0].hash]);
-        
-
-        var temp_hash="123test123";
-        var client = new UserClient();
-        client.send_data([temp_hash]);
-        
-
-		res.send('hash:test is added succesfully');
+		client.send_data([res1[0].hash]);       
+		res.send('hash':res1[0.hash]);
 			
 	} 
 		});		
@@ -86,7 +88,7 @@ router.post('/regstr',(req,res)=>{
   res.send({msg:"registrat"});
 
 })
-router.post('/usr',(req,res)=>{
+/*router.post('/usr',(req,res)=>{
  var key = req.body.key; 
  var no = req.body.no; 
  var name = req.body.name; 
@@ -96,20 +98,66 @@ router.post('/usr',(req,res)=>{
  console.log('name:'+name);
  res.send({name:name,id:no});
 })
+*/
 
 router.get('/usr',(req,res)=>{
- var client = new UserClient(null);
- let data1 = client.getData().then(data=>{console.log("data.data------"+JSON.stringify(data.data));
+  var key = req.query.key; 
+  var no = req.query.no; 
+ var name = req.query.name; 
+ data = name;
+ /*var client = new UserClient(key);
+ client.send_data([no,name]);
+
+ var client1 = new UserClient(null);
+ let data1 = client1.getData().then(data=>{console.log("data.data------"+JSON.stringify(data.data));
   data = Buffer.from(data.data[0].data, 'base64').toString();
   
   console.log('state data====='+JSON.stringify(data));
 
- console.log('getting user data');res.render('dash',{data:data})});
+ console.log('getting user data');});
   
- //
- 
+ */
+fs.writeFile('../userdata', (no+','+name), function (err) {
+                if (err) throw err;
+                console.log('Replaced!');
+                });                  
+                  
+
+                res.render('dash',{data:data});
+              }) 
+                
+
+router.get('/regstr',(req,res)=>{
+  var key = req.query.key;
+ var client1 = new UserClient(key);
+ /*let data1 = client1.getData().then(data=>{console.log("data.data------"+JSON.stringify(data.data));
+  data = Buffer.from(data.data[0].data, 'base64').toString();
+  
+  console.log('state data====='+JSON.stringify(data));
+
+ console.log('getting user data');});
+  
+ res.render('dash',{data:data})
+ */
+ fs.readFile("../userdata", "utf-8", (err, data) => {
+      console.log('data in fileeeeeeeeee'+data);
+      var client = new UserClient(key);
+      client.send_data([data])
+});
+    res.render('dash1');
+
 })
 
+router.post('/usr', function(req, res) {
+  console.log('uploading');
+ 
+  var upload = multer({
+    storage: storage
+  }).single('myfile')
+  upload(req, res, function(err) {
+    res.end('File is uploaded')
+  })
+})
 
 
 

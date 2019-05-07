@@ -10,30 +10,33 @@
    
  
     <div>
-        <form action="/regstr" method="GET">
+        <form action="/regstr" method="GET"> 
             
-            <table>
-                        <tr>
+            
+                        
                            
-                            <th><button class="btn signup" id="registrar">Registrar</button></th>
+                            <th><td><button class="btn signup" id="registrar">Registrar dasboard</button></td></th>
 
-                        </tr>
+                        
                        
                         <tr>
                             <td><input type="text" id="pvtkey" placeholder="enter your private key"></td></tr>
                          <tr><td> <button type="button"  class="btn signup" onclick= "writereg(event)" >Submit</button></td>
+                        
                         </tr>
 
-
-                    </table></form><hr>    
+                    </form><hr>    
          
         <form action="/usr" method="GET"><table>                <tr>
 
-                              <th><button  class="btn signup" id="user">User</button></th></tr>
+                           <th><button  class="btn signup" id="user">User dashboard</button></th></tr> 
                             </tr><td><input type="text" id="usrpvtkey" placeholder="enter your private key"></td></tr>
                             <tr><td><input type="text" id="adhar" placeholder="enter your adhar number"></td></tr>
                             <tr><td><input type="text" id="name" placeholder="enter your name"></td></tr>
-                            <tr><td><button type="submit"  class="btn signup" onclick= "writeusr(event)" > Submit</button></td>
+                            <tr><td><button type="submit"  class="btn signup" onclick= "writeusr(event)" > Submit</button>
+                            <td><td>
+
+                            </td>
                         </tr>    
 
                        
@@ -52,8 +55,4 @@
 <script src='/javascripts/main.js'></script>
  
  <script>
-
-
- $('#user').click(function(){$("#usr").css("display", "inline");});
- $('#registrar').click(function(){$('#regstr').css("display", "block");});
 </script>
