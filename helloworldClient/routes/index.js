@@ -103,8 +103,9 @@ router.post('/regstr',(req,res)=>{
 router.get('/usr',(req,res)=>{
   var key = req.query.key; 
   var no = req.query.no; 
- var name = req.query.name; 
- data = name;
+ var name = req.query.name;
+ console.log('entered data='+no+','+name); 
+ var data = str(name+','+no);
  /*var client = new UserClient(key);
  client.send_data([no,name]);
 
@@ -117,14 +118,14 @@ router.get('/usr',(req,res)=>{
  console.log('getting user data');});
   
  */
-fs.writeFile('../userdata', (no+','+name), function (err) {
+fs.writeFile('../userdata',data,  function (err) {
                 if (err) throw err;
-                console.log('Replaced!');
+                console.log('user data written');
                 });                  
                   
 
                 res.render('dash',{data:data});
-              }) 
+              }); 
                 
 
 router.get('/regstr',(req,res)=>{
@@ -141,10 +142,23 @@ router.get('/regstr',(req,res)=>{
  */
  fs.readFile("../userdata", "utf-8", (err, data) => {
       console.log('data in fileeeeeeeeee'+data);
-      var client = new UserClient(key);
-      client.send_data([data])
+      // var client = new UserClient(key);
+      // client.send_data([data])
+                   
+     fs.readdir("./uploads", function (err, files) {
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    files.forEach(function (file) {
+        console.log(file);
+          res.render('dash1',{data:data,file:file}); 
+    });
 });
-    res.render('dash1');
+
+
+
+});
+  
 
 })
 
@@ -155,11 +169,11 @@ router.post('/usr', function(req, res) {
     storage: storage
   }).single('myfile')
   upload(req, res, function(err) {
-    res.end('File is uploaded')
+    res.send('File is uploaded')
   })
 })
 
-
+router.post('/hash')
 
 module.exports = router;
 

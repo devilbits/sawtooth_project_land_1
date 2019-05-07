@@ -10,7 +10,6 @@ const {TextEncoder, TextDecoder} = require('text-encoding/lib/encoding')
 
 FAMILY_NAME='HelloWorld'
 
-//privateKeyHex = "66ad89d0ff29b0267fba72ea8d40ef7975e10f8acde8d50d20cdf56ba9599c5e";
 prkey = "";
 function hash(v) {
   return createHash('sha512').update(v).digest('hex');

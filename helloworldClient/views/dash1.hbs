@@ -1,1 +1,30 @@
+
+<script src='/javascripts/main.js'></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
 <h1>registrar</h1>
+data:{{data}}
+<br>
+file:{{file}}
+<br>
+<a href="localhost:4000" target="_blank">upload to ipfs</a>
+
+<button type="button" onclick="retrive_hash(event)">click to retrive hash</button>
+<button type="button" onclick="send_to_block(event)">send to block</button>
+<button type="button" onclick="reject(event)">Reject</button>
+
+
+<script>
+function retrive_hash(event){
+	$.post('/hash');
+}
+function send_to_block(event){
+	$.post('/block');
+}
+function reject(event)(event){
+	$.post('/rjct');
+}
+</script>
+
+
+
