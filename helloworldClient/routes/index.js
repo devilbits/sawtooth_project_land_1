@@ -301,4 +301,21 @@ router.get('/regstr',(req,res)=>{
 
 */
 
+
+router.post('/hash',(req,res)=>{
+  console.log('inside /hash')
+  fs.readFile('../ipfs-upload/test1', function (err, data) {
+  if (err) throw err;
+  
+  fs.appendFile('../userdata',','+data, function (err) {
+  if (err) throw err;
+  console.log('hash Saved!');
+  res.redirect('back')
+});
+
+
+
+});
+});
+
 module.exports = router;

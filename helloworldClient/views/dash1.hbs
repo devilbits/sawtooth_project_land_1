@@ -1,6 +1,24 @@
 
 <script src='/javascripts/main.js'></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<body>
+<script>
+
+function retrive_hash(e){
+   e.preventDefault();
+   alert('retriving hash')
+	$.post('/hash');
+}
+function send_to_block(){
+	$.post('/block');
+}
+function reject(event)(){
+	$.post('/rjct');
+}
+</script>
+
+
 
 <h1>registrar</h1>
 data:{{data}}
@@ -8,23 +26,12 @@ data:{{data}}
 file:{{file}}
 <br>
 <a href="localhost:4000" target="_blank">upload to ipfs</a>
-
-<button type="button" onclick="retrive_hash(event)">click to retrive hash</button>
-<button type="button" onclick="send_to_block(event)">send to block</button>
-<button type="button" onclick="reject(event)">Reject</button>
-
-
-<script>
-function retrive_hash(event){
-	$.post('/hash');
-}
-function send_to_block(event){
-	$.post('/block');
-}
-function reject(event)(event){
-	$.post('/rjct');
-}
-</script>
+<form action="/hash" method="POST">
+<button ">click to retrive hash</button>
+<button type="button" onclick="send_to_block()">send to block</button>
+<button type="button" onclick="reject()">Reject</button>
+</form>
+</body>
 
 
 
