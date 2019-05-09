@@ -1,7 +1,9 @@
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src='/javascripts/main.js'></script> 
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <h1>Land Registry</h1>
 
-<a class="nav-link" id="home" href="/homePage">Home </a>
+
+
 <style>
     .body {
         background: #f05837
@@ -14,46 +16,38 @@
     }
 </style>
 
-
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-
- <form action="/usr1" enctype="multipart/form-data" method="POST">
-  <input type="file" name="myfile">
-  <input type="submit" value="upload">  
-</form>
-
-<form >
 <body class="body">
     <form class="style">
        
         <div class="form-group row">
            
-            <label class="col-sm-2 col-form-label">User Name</label>
+            <label class="col-sm-2 col-form-label">Property Name</label>
             <div class="col-sm-10">
                 <div class="md-form mt-0">
-                 {{name}}
+                 
                 </div>
             </div>
         </div>
      
         <div class="form-group row">
             
-            <label class="col-sm-2 col-form-label">Adhar number</label>
+            <label class="col-sm-2 col-form-label">Property Area</label>
             <div class="col-sm-10">
                 <div class="md-form mt-0">
-                  {{id}}
+                  
                 </div>
             </div>
         </div>
 
         
-            <label class="col-sm-2 col-form-label">uploaded document hash</label>
+            <label class="col-sm-2 col-form-label">Property Location</label>
             <div class="col-sm-10">
                 <div class="md-form mt-0">
-                 {{hash}}
+                 
                 </div>
             </div>
         </div>
@@ -62,7 +56,7 @@
             <label class="col-sm-2 col-form-label">Property Name</label>
             <div class="col-sm-10">
                 <div class="md-form mt-0">
-                    <input type="text" class="form-control" id="prop_name" placeholder="Property Name">
+                    <input type="text" class="form-control" id="prop_location" placeholder="Property Name">
                 </div>
             </div>
         </div>
@@ -71,7 +65,7 @@
             <label class="col-sm-2 col-form-label">Property Area</label>
             <div class="col-sm-10">
                 <div class="md-form mt-0">
-                    <input type="text" class="form-control" id="prop_area" placeholder="Property Area">
+                    <input type="text" class="form-control" id="prop_location" placeholder="Property Area">
                 </div>
             </div>
         </div>
@@ -89,7 +83,7 @@
     
         <div class="form-group row">
             <div class="col-sm-10">
-                <button type="button" class="btn btn-primary btn-md" onclick='send_data()'>SUBMIT</button>
+                <button type="submit" class="btn btn-primary btn-md">SUBMIT</button>
             </div>
         </div>
 
@@ -103,14 +97,3 @@
     </form>
              
 </body> 
-
-
-  </form>   
-  <script>
-    function send_data(){
-      var prop_name = document.getElementById('prop_name').value;
-      var prop_area = document.getElementById('prop_area').value;
-      var prop_loc = document.getElementById('prop_location').value;
-      $.post('/usr2',{name:prop_name,area:prop_area,loc:prop_loc},'json');
-    }
-  </script>

@@ -1,37 +1,46 @@
+<link rel='stylesheet' href='/stylesheets/dashboards.css' />
 
-<script src='/javascripts/main.js'></script>
+
+
+<div class="form-modal">
+
+
+
+<div>
+	<h1>registrar</h1>
+	data:{{data}}
+	<br>
+	file:{{file}}
+	<br>
+	<a href="localhost:4000" target="_blank">upload to ipfs</a>
+</div>
+<div>
+<button type="button" onclick="retrive_hash(event)">click to retrive hash</button>
+</div><div>
+<input type="text" name='key' id="key" placeholder=" enter registar key">
+<button  type='button' id="test"  onclick="send_to_block(event)">send to block</button></form>
+<button type="button" onclick="reject()">Reject</button>
+</div>
+</div>
+
+
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
-<body>
 <script>
 
-function retrive_hash(e){
-   e.preventDefault();
-   alert('retriving hash')
+function retrive_hash(event){
+   event.preventDefault();
 	$.post('/hash');
-}
-function send_to_block(){
-	$.post('/block');
-}
-function reject(event)(){
+};
+function send_to_block(e){
+    e.preventDefault();
+    var key = document.getElementById('key').value;
+
+	$.post('/block',{key:key},'json');
+
+};
+function reject(event){
 	$.post('/rjct');
-}
+};
 </script>
-
-
-
-<h1>registrar</h1>
-data:{{data}}
-<br>
-file:{{file}}
-<br>
-<a href="localhost:4000" target="_blank">upload to ipfs</a>
-<form action="/hash" method="POST">
-<button ">click to retrive hash</button>
-<button type="button" onclick="send_to_block()">send to block</button>
-<button type="button" onclick="reject()">Reject</button>
-</form>
-</body>
-
-
-
