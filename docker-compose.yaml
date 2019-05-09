@@ -79,8 +79,8 @@ services:
       ports:
         - 4000:4000
       build:
-         context: ipfs-upload/
-         dockerfile: DockerFile
+         context: .
+         dockerfile: ipfs-upload/DockerFile
      
 
   validator:

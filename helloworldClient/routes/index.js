@@ -21,25 +21,43 @@ const path   = require('path');
 });
 
 
-
-
-
-
 router.get('/', function(req, res, next) {
   res.render('dlogin',{title: 'landReg'});
 });
 
 router.get('/usr',(req,res)=>{
-  fs.readFile("../userdata", "utf-8", (err, data) => {
-    data = data.toString().trim().split(',');
-   if(data[2]==undefined){res.render('dash',{name:data[0],id:data[1],hash:'not available'});}else{res.render('dash',{name:data[0],id:data[1],hash:data[2]});}
- 
+  fs.readFile("../userdata.json", "utf-8", (err, data) => {
+    data = JSON.parse(data);
+    var name = JSON.stringify(data['data'][0].name)
+    var id   = JSON.stringify(data['data'][0].id)
+    var hash = JSON.stringify(data['data'][0].hash)
+   if(hash==='not available'){res.render('dash',{name:name,id:id,hash:'not available!'});}else{res.render('dash',{name:name,id:id,hash:hash});}
+  
 });})
 
 router.get('/regstr',(req,res)=>{
   var key = req.query.key;
- var client1 = new UserClient(key);
- fs.readFile("../userdata", "utf-8", (err, data) => {
+
+
+fs.readFile('../userdata.json', 'utf8', (err, data)=>{
+    if (err){console.log(err);} else {
+
+
+      fs.readdir("./uploads", function (err, files) {
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    files.forEach(function (file) {
+        console.log(file);
+          res.render('dash1',{data:data,file:file}); 
+    });
+    });
+
+}});
+
+
+
+ /*fs.readFile("../userdata", "utf-8", (err, data) => {
       console.log('data in fileeeeeeeeee'+data);
      fs.readdir("./uploads", function (err, files) {
     if (err) {
@@ -50,31 +68,28 @@ router.get('/regstr',(req,res)=>{
           res.render('dash1',{data:data,file:file}); 
     });
 });
-});
+});*/
 })
 
-
-
-router.post('/usr2',(req,res)=>{
-  var name = req.body.name;
-   var area = req.body.area;
-   var loc = req.body.loc;
-   console.log('before ==='+name+area+loc);
-   if(name == null | name == undefined){dataa = "";}else{dataa=[name,area,loc];}
-    console.log('---dataa----'+dataa);
-   fs.appendFile('../userdata',dataa, function (err) {
-  if (err) throw err;})
-   res.redirect('/');
-
-})
-
-router.post('/regstr',(req,res)=>{
+router.post('/usr',(req,res)=>{
   var key = req.body.key; 
-  var client = new UserClient(key);
-  console.log('log in as a registrar')
-  res.send({msg:"registrat"});
+  var no = req.body.no; 
+ var name = req.body.name;
+ console.log('key=='+key);
+ var obj = { this.no: [] };
+obj.data.push({id:no,name:name,hash:'not available'});
+var jsonData = JSON.stringify(obj);
 
-})
+ 
+  console.log('uploading');
+fs.writeFile('../userdata.json', jsonData, function (err) {
+                if (err) throw err;
+                console.log('Replaced!');
+                });                  
+                  
+
+                res.redirect('back');
+              }); 
 
 router.post('/usr1',(req,res)=>{
      
@@ -94,31 +109,39 @@ router.post('/usr1',(req,res)=>{
 
 })
 
+router.post('/usr2',(req,res)=>{
+  var name = req.body.name;
+   var area = req.body.area;
+   var loc = req.body.loc;
+  //  console.log('before ==='+name+area+loc);
+  //  if(name == null | name == undefined){dataa = "";}else{dataa=[name,area,loc];}
+  //   console.log('---dataa----'+dataa);
+  //  fs.appendFile('../userdata',dataa, function (err) {
+  // if (err) throw err;})
+  //  res.redirect('/');
+  fs.readFile('../userdata.json', 'utf8',(err, data)=>{
+    if (err){
+        console.log(err);
+    } else {
+    obj = JSON.parse(data); 
+    obj.data.push({property_name:name,property_area:area,property_location:loc}); 
+    json = JSON.stringify(obj);
+    fs.writeFile('../userdata.json', json, 'utf8', (err)=>{console.log('userdata.json unavilable')});  
+    res.redirect('/');
+}});
 
-router.post('/usr',(req,res)=>{
+
+
+
+})
+
+router.post('/regstr',(req,res)=>{
   var key = req.body.key; 
-  var no = req.body.no; 
- var name = req.body.name;
- console.log('key=='+key);
- data = [no,name];
- var fileName='/'+no;
- function filename(){return filename;}
- console.log('after');
- console.log('dataaaaa:'+data)
- 
-  console.log('uploading');
+  var client = new UserClient(key);
+  console.log('log in as a registrar')
+  res.send({msg:"registrat"});
 
-fs.writeFile(fileName, data, function (err) {
-                if (err) throw err;
-                console.log('Replaced!');
-                });                  
-                  
-
-                res.redirect('back');
-              }); 
-                
-
-
+})
 
 
 
