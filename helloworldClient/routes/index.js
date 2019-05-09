@@ -20,22 +20,39 @@ const path   = require('path');
   }
 });
 
-router.get('/', function(req, res, next) {
 
+
+
+
+
+router.get('/', function(req, res, next) {
   res.render('dlogin',{title: 'landReg'});
 });
 
 router.get('/usr',(req,res)=>{
-   
-
   fs.readFile("../userdata", "utf-8", (err, data) => {
     data = data.toString().trim().split(',');
-   
-
-
    if(data[2]==undefined){res.render('dash',{name:data[0],id:data[1],hash:'not available'});}else{res.render('dash',{name:data[0],id:data[1],hash:data[2]});}
  
 });})
+
+router.get('/regstr',(req,res)=>{
+  var key = req.query.key;
+ var client1 = new UserClient(key);
+ fs.readFile("../userdata", "utf-8", (err, data) => {
+      console.log('data in fileeeeeeeeee'+data);
+     fs.readdir("./uploads", function (err, files) {
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    files.forEach(function (file) {
+        console.log(file);
+          res.render('dash1',{data:data,file:file}); 
+    });
+});
+});
+})
+
 
 
 router.post('/usr2',(req,res)=>{
@@ -47,7 +64,7 @@ router.post('/usr2',(req,res)=>{
     console.log('---dataa----'+dataa);
    fs.appendFile('../userdata',dataa, function (err) {
   if (err) throw err;})
-   res.redirect('/usr');
+   res.redirect('/');
 
 })
 
@@ -84,12 +101,14 @@ router.post('/usr',(req,res)=>{
  var name = req.body.name;
  console.log('key=='+key);
  data = [no,name];
+ var fileName='/'+no;
+ function filename(){return filename;}
  console.log('after');
  console.log('dataaaaa:'+data)
  
   console.log('uploading');
 
-fs.writeFile('../userdata', data, function (err) {
+fs.writeFile(fileName, data, function (err) {
                 if (err) throw err;
                 console.log('Replaced!');
                 });                  
@@ -99,36 +118,7 @@ fs.writeFile('../userdata', data, function (err) {
               }); 
                 
 
-router.get('/regstr',(req,res)=>{
-  var key = req.query.key;
- var client1 = new UserClient(key);
- /*let data1 = client1.getData().then(data=>{console.log("data.data------"+JSON.stringify(data.data));
-  data = Buffer.from(data.data[0].data, 'base64').toString();
-  
-  console.log('state data====='+JSON.stringify(data));
 
- console.log('getting user data');});
-  
- res.render('dash',{data:data})
- */
- fs.readFile("../userdata", "utf-8", (err, data) => {
-      console.log('data in fileeeeeeeeee'+data);
-     fs.readdir("./uploads", function (err, files) {
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    files.forEach(function (file) {
-        console.log(file);
-          res.render('dash1',{data:data,file:file}); 
-    });
-});
-
-
-
-});
-  
-
-})
 
 
 

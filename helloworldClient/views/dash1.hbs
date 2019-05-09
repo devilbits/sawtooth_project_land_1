@@ -1,46 +1,73 @@
-<link rel='stylesheet' href='/stylesheets/dashboards.css' />
+<style>
+    .body {
+        background: #282726;
+    }
 
+    .container {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        background: #f05837;
+        padding: 5% 5%;
+    }
 
+</style>
 
-<div class="form-modal">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
 
+<body class="body">
+    <div class="container">
+        <h2><b><u>REGISTRAR DASHBOARD</u></b></h2>
+        <br><br><br>
+        <div class="file-field">
+            
+        </div>
+        <br><br><br>
+        <h3><b>Data :</b></h3>
+        <br>
+        <h4>{{data}}</h4>
+        <br><br><br>
+        <h3><b>File :</b></h3>
+        <br>
+        <h4>{{file}}</h4>
+        <br><br><br>
+        <a href="localhost:4000" target="_blank">Upload To IPFS</a>
+        <br><br><br>
+        <button type="btn btn-success" onclick="retrive_hash(event)">Click To Retrieve Hash</button>
+        <br><br><br>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"></span>
+            </div>
+            <input type="text" id="key" class="form-control" placeholder="Private Key">
+        </div>
+        <br>
+        <button class="btn btn-success" id="test" onclick="send_to_block(event)">Send To Block</button>
+        &nbsp &nbsp &nbsp
+        <button class="btn btn-danger" onclick="reject()">REJECT</button>
 
+    </div>
 
-<div>
-	<h1>registrar</h1>
-	data:{{data}}
-	<br>
-	file:{{file}}
-	<br>
-	<a href="localhost:4000" target="_blank">upload to ipfs</a>
-</div>
-<div>
-<button type="button" onclick="retrive_hash(event)">click to retrive hash</button>
-</div><div>
-<input type="text" name='key' id="key" placeholder=" enter registar key">
-<button  type='button' id="test"  onclick="send_to_block(event)">send to block</button></form>
-<button type="button" onclick="reject()">Reject</button>
-</div>
-</div>
-
-
+</body>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
 <script>
 
-function retrive_hash(event){
-   event.preventDefault();
-	$.post('/hash');
-};
-function send_to_block(e){
-    e.preventDefault();
-    var key = document.getElementById('key').value;
+    function retrive_hash(event) {
+        event.preventDefault();
+        $.post('/hash');
+    };
+    function send_to_block(e) {
+        e.preventDefault();
+        var key = document.getElementById('key').value;
 
-	$.post('/block',{key:key},'json');
+        $.post('/block', { key: key }, 'json');
 
-};
-function reject(event){
-	$.post('/rjct');
-};
+    };
+    function reject(event) {
+        $.post('/rjct');
+    };
 </script>

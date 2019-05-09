@@ -1,111 +1,81 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<h1>Land Registry</h1>
 
-<a class="nav-link" id="home" href="/homePage">Home </a>
 <style>
     .body {
-        background: #f05837
+        background: #282726;
     }
 
-    .style {
-        padding-top: 8%;
-        padding-left: 8%;
-        padding-right: 8%;
+    .container {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        background: #f05837;
+        padding: 5% 5%;
     }
+
 </style>
-
 
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
 
-
- <form action="/usr1" enctype="multipart/form-data" method="POST">
-  <input type="file" name="myfile">
-  <input type="submit" value="upload">  
-</form>
-
-<form >
 <body class="body">
-    <form class="style">
-       
-        <div class="form-group row">
-           
-            <label class="col-sm-2 col-form-label">User Name</label>
-            <div class="col-sm-10">
-                <div class="md-form mt-0">
-                 {{name}}
-                </div>
-            </div>
-        </div>
-     
-        <div class="form-group row">
-            
-            <label class="col-sm-2 col-form-label">Adhar number</label>
-            <div class="col-sm-10">
-                <div class="md-form mt-0">
-                  {{id}}
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <h2><b><u>USER DASHBOARD</u></b></h2>
+        <br><br><br>
 
-        
-            <label class="col-sm-2 col-form-label">uploaded document hash</label>
-            <div class="col-sm-10">
-                <div class="md-form mt-0">
-                 {{hash}}
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
+        <form action="/usr1" enctype="multipart/form-data" method="POST"></form>
+            <div class="file-field">
+                <a class="btn-floating blue-gradient mt-0 float-left">
+                    <i class="far fa-heart" aria-hidden="true"></i>
+                    <input type="file">
+                </a>
             
-            <label class="col-sm-2 col-form-label">Property Name</label>
-            <div class="col-sm-10">
-                <div class="md-form mt-0">
-                    <input type="text" class="form-control" id="prop_name" placeholder="Property Name">
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Upload your file">
                 </div>
             </div>
-        </div>
-        <div class="form-group row">
-           
-            <label class="col-sm-2 col-form-label">Property Area</label>
-            <div class="col-sm-10">
-                <div class="md-form mt-0">
+        </form>
+        <br><br><br>
+
+        <form>
+            <h3><b>Username :</b></h3>
+            <br>
+            <h4>{{name}}</h4>
+            <br><br><br>
+            <h3><b>Aadhar Number :</b></h3>
+            <br>
+            <h4>{{id}}</h4>
+            <br><br><br>
+            <h3><b>Uploaded Document Hash :</b></h3>
+            <br>
+            <h4>{{hash}}</h4>
+            <br><br><br>
+            <form>
+                <div class="form-group">
+                    <label for="prop_name">Property Name :</label>
+                    <input type="text" class="form-control" id="prop_name" placeholder="Enter Property Name">
+                </div>
+                <div class="form-group">
+                    <label for="prop_area">Property Area :</label>
                     <input type="text" class="form-control" id="prop_area" placeholder="Property Area">
                 </div>
-            </div>
-        </div>
-        <div class="form-group row">
-           
-            <label class="col-sm-2 col-form-label">Property Location</label>
-            <div class="col-sm-10">
-                <div class="md-form mt-0">
+                <div class="form-group">
+                    <label for="prop_location">Property Location :</label>
                     <input type="text" class="form-control" id="prop_location" placeholder="Property Location">
                 </div>
-            </div>
+            </form>
+            <br>
+            <button type="button" class="btn btn-success" onclick="send_data()">SUBMIT</button>
+            &nbsp &nbsp &nbsp
+            <button class="btn btn-danger" onclick="logout()">LOGOUT</button>
+        
         </div>
-      
-        <br>
-    
-        <div class="form-group row">
-            <div class="col-sm-10">
-                <button type="button" class="btn btn-primary btn-md" onclick='send_data()'>SUBMIT</button>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-sm-10">
-                <button type="button" onclick="logout()" class="btn">LOGOUT</button>
-            </div>
-        </div>
-
-       
     </form>
-             
-</body> 
+    
+</body>
 
 
-  </form>   
   <script>
     function send_data(){
       var prop_name = document.getElementById('prop_name').value;

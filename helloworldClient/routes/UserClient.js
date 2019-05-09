@@ -8,7 +8,7 @@ const {Secp256k1PrivateKey} = require('sawtooth-sdk/signing/secp256k1')
 const {TextEncoder, TextDecoder} = require('text-encoding/lib/encoding')
 
 
-FAMILY_NAME='HelloWorld'
+FAMILY_NAME='landreg'
 
 prkey = "";
 function hash(v) {
@@ -23,7 +23,7 @@ class UserClient{
     const secp256k1pk = Secp256k1PrivateKey.fromHex(key1.trim());
     this.signer = new CryptoFactory(context).newSigner(secp256k1pk);
     this.publicKey = this.signer.getPublicKey().asHex();
-    this.address = hash("HelloWorld").substr(0, 6) + hash(this.publicKey).substr(0, 64);
+    this.address = hash("landreg").substr(0, 6) + hash(this.publicKey).substr(0, 64);
     console.log("Storing at: " + this.address);
     
   }
@@ -40,7 +40,7 @@ send_data(values){
   var encode =new TextEncoder('utf8');
   const payloadBytes = encode.encode(payload)
   const transactionHeaderBytes = protobuf.TransactionHeader.encode({
-    familyName: 'HelloWorld',
+    familyName: 'landreg',
     familyVersion: '1.0',
     inputs: inputAddressList,
     outputs: outputAddressList,
@@ -129,7 +129,7 @@ async _send_to_rest_api(batchListBytes){
   }
 
  async getData() {
-    let addr = hash("HelloWorld").substr(0, 6) + hash(this.publicKey).substr(0, 64);
+    let addr = hash("landreg").substr(0, 6) + hash(this.publicKey).substr(0, 64);
     return this.getState(addr, true);
   }
 
