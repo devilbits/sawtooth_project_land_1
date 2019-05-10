@@ -10,9 +10,10 @@ const multer = require('multer');
 const path   = require('path');
 
 
+
  var storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, './uploads')
+    callback(null, '../uploads')
   },
   filename: function(req, file, callback) {
     console.log(file)
@@ -26,14 +27,24 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/usr',(req,res)=>{
-  fs.readFile("../userdata.json", "utf-8", (err, data) => {
+  var id = req.query.id;
+  if (id!=undefined){req.session.idValue = id;
+
+      fs.readFile("../userdata/"+id+'.json', "utf-8", (err, data) => {
     data = JSON.parse(data);
-    var name = JSON.stringify(data['data'][0].name)
-    var id   = JSON.stringify(data['data'][0].id)
-    var hash = JSON.stringify(data['data'][0].hash)
-   if(hash==='not available'){res.render('dash',{name:name,id:id,hash:'not available!'});}else{res.render('dash',{name:name,id:id,hash:hash});}
-  
-});})
+    console.log('****'+JSON.stringify(data));
+    var field_data = data['data'];
+    field_data = field_data[0];
+    var name = JSON.stringify(field_data.name);
+    var id   = JSON.stringify(field_data.id);
+    var hash = JSON.stringify(field_data.hash);
+    console.log('////id'+name+id+hash);
+    req.session.name = name;
+    req.session.hash = hash;
+    // if(hash==='not available'){res.render('dash',{name:name,id:id,hash:'not available!'});}else{res.render('dash',{name:name,id:id,hash:hash});}
+});}else{id = req.session.idValue;}
+res.render('dash',{name:name,id:id,hash:'not available!'}); 
+})
 
 router.get('/regstr',(req,res)=>{
   var key = req.query.key;
@@ -76,34 +87,44 @@ router.post('/usr',(req,res)=>{
   var no = req.body.no; 
  var name = req.body.name;
  console.log('key=='+key);
- var obj = { this.no: [] };
+ // var obj = {};
+ // obj[no] = [];
+ var obj = {data:[]}
 obj.data.push({id:no,name:name,hash:'not available'});
 var jsonData = JSON.stringify(obj);
-
+file_name = '../userdata/'+no+'.json';
+console.log(file_name);
  
   console.log('uploading');
-fs.writeFile('../userdata.json', jsonData, function (err) {
-                if (err) throw err;
-                console.log('Replaced!');
-                });                  
-                  
+   var dir = '../userdata';
 
-                res.redirect('back');
+ if (!fs.existsSync(dir)){
+     fs.mkdirSync(dir);
+ }
+fs.writeFile(file_name, jsonData,{ flag: 'w' }, function (err) {
+                if (err) {console.log('../userdata folder is not available');throw err};
+                console.log('Replaced!');
+                
+                });                  
+                res.redirect('/usr?id='+no);  
+
+                
               }); 
 
 router.post('/usr1',(req,res)=>{
-     
-  var dir = './uploads';
 
-// if (!fs.existsSync(dir)){
-//     fs.mkdirSync(dir);
-// }
+     console.log('inside /usr1');
+  var dir = '../uploads';
+
+ if (!fs.existsSync(dir)){
+     fs.mkdirSync(dir);
+ }
 
   var upload = multer({
     storage: storage
   }).single('myfile')
   upload(req, res, function(err) {
-    console.log('File is uploaded');
+    console.log(' user file is uploaded');
     res.redirect('/usr');
   });
 
@@ -113,6 +134,7 @@ router.post('/usr2',(req,res)=>{
   var name = req.body.name;
    var area = req.body.area;
    var loc = req.body.loc;
+   console.log('***:'+id);
   //  console.log('before ==='+name+area+loc);
   //  if(name == null | name == undefined){dataa = "";}else{dataa=[name,area,loc];}
   //   console.log('---dataa----'+dataa);

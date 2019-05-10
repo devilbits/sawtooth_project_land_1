@@ -23,16 +23,16 @@
     <div class="container">
         <h2><b><u>USER DASHBOARD</u></b></h2>
         <br><br><br>
-
-        <form action="/usr1" enctype="multipart/form-data" method="POST"></form>
+         
+        <form action="/usr1" enctype="multipart/form-data" method="POST">
             <div class="file-field">
                 <a class="btn-floating blue-gradient mt-0 float-left">
                     <i class="far fa-heart" aria-hidden="true"></i>
-                    <input type="file">
+                    <input type="file" id="myfile" name="myfile">
                 </a>
             
                 <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text" placeholder="Upload your file">
+                    <input class="file-path validate" type="submit" value='upload'>
                 </div>
             </div>
         </form>
