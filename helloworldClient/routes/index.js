@@ -16,7 +16,7 @@ const path   = require('path');
     callback(null, '../uploads')
   },
   filename: function(req, file, callback) {
-    console.log(file)
+    console.log(file);
     callback(null,file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 });
@@ -27,30 +27,51 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/usr',(req,res)=>{
-  var id = req.query.id;
-  if (id!=undefined){req.session.idValue = id;
+  //console.log(JSON.stringify(req.cookies));
+  //if file_name undefined check the cookie
 
-      fs.readFile("../userdata/"+id+'.json', "utf-8", (err, data) => {
+  var file_name =req.cookies.file_name;
+ 
+ 
+ console.log('usr get:'+file_name);
+ fs.readFile(file_name, (err, data) => {
     data = JSON.parse(data);
     console.log('****'+JSON.stringify(data));
     var field_data = data['data'];
     field_data = field_data[0];
-    var name = JSON.stringify(field_data.name);
-    var id   = JSON.stringify(field_data.id);
-    var hash = JSON.stringify(field_data.hash);
-    console.log('////id'+name+id+hash);
-    req.session.name = name;
-    req.session.hash = hash;
-    // if(hash==='not available'){res.render('dash',{name:name,id:id,hash:'not available!'});}else{res.render('dash',{name:name,id:id,hash:hash});}
-});}else{id = req.session.idValue;}
-res.render('dash',{name:name,id:id,hash:'not available!'}); 
-})
+     name = JSON.stringify(field_data.name);
+     id   = JSON.stringify(field_data.id);
+     //hash = JSON.stringify(field_data.hash);
+   
+
+      res.render('dash',{name:name,id:id});
+
+})});
 
 router.get('/regstr',(req,res)=>{
   var key = req.query.key;
+count = 0;
+cosole.log('regstr');
+
+fs.readdir("./uploads",(err, files)=> {
+  if (err) {return console.log('Unable to scan directory: ' + err);}
+  // console.log('fs readdir'); 
+  //   files.forEach(function (file) {
+  //     count = count+1;
+      
+    //   fs.readFile(file, 'utf8', (err, data)=>{
+    // if (err){console.log(err);} else {}});
+     
+
+    
+    });
 
 
-fs.readFile('../userdata.json', 'utf8', (err, data)=>{
+
+
+
+
+/*fs.readFile(file_name, 'utf8', (err, data)=>{
     if (err){console.log(err);} else {
 
 
@@ -64,7 +85,7 @@ fs.readFile('../userdata.json', 'utf8', (err, data)=>{
     });
     });
 
-}});
+}});*/
 
 
 
@@ -80,12 +101,16 @@ fs.readFile('../userdata.json', 'utf8', (err, data)=>{
     });
 });
 });*/
-})
+
+});
 
 router.post('/usr',(req,res)=>{
   var key = req.body.key; 
   var no = req.body.no; 
  var name = req.body.name;
+
+ res.cookie('idValue',no);
+ res.cookie('same_person',true);
  console.log('key=='+key);
  // var obj = {};
  // obj[no] = [];
@@ -93,7 +118,8 @@ router.post('/usr',(req,res)=>{
 obj.data.push({id:no,name:name,hash:'not available'});
 var jsonData = JSON.stringify(obj);
 file_name = '../userdata/'+no+'.json';
-console.log(file_name);
+res.cookie('file_name',file_name);
+console.log('/usr post:'+file_name);
  
   console.log('uploading');
    var dir = '../userdata';
@@ -106,7 +132,7 @@ fs.writeFile(file_name, jsonData,{ flag: 'w' }, function (err) {
                 console.log('Replaced!');
                 
                 });                  
-                res.redirect('/usr?id='+no);  
+                res.send({msg:'connected'});  
 
                 
               }); 
@@ -134,21 +160,23 @@ router.post('/usr2',(req,res)=>{
   var name = req.body.name;
    var area = req.body.area;
    var loc = req.body.loc;
-   console.log('***:'+id);
+  
   //  console.log('before ==='+name+area+loc);
   //  if(name == null | name == undefined){dataa = "";}else{dataa=[name,area,loc];}
   //   console.log('---dataa----'+dataa);
   //  fs.appendFile('../userdata',dataa, function (err) {
   // if (err) throw err;})
   //  res.redirect('/');
-  fs.readFile('../userdata.json', 'utf8',(err, data)=>{
+  var file_name =req.cookies.file_name;
+  console.log('/usr2:'+file_name);
+  fs.readFile(file_name, 'utf8',(err, data)=>{
     if (err){
         console.log(err);
     } else {
     obj = JSON.parse(data); 
     obj.data.push({property_name:name,property_area:area,property_location:loc}); 
     json = JSON.stringify(obj);
-    fs.writeFile('../userdata.json', json, 'utf8', (err)=>{console.log('userdata.json unavilable')});  
+    fs.writeFile(file_name, json, 'utf8', (err)=>{if(err)console.log('userdata.json unavilable')});  
     res.redirect('/');
 }});
 
