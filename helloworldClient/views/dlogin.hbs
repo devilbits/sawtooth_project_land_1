@@ -83,13 +83,13 @@
         <div class="col-md-6 login-form-2">
             
             <h3>Registrar Login</h3>
-             <form >
+             <form action="/regstr" method="GET">
             <div class="form-group">
-                <input type="text" id="pvtkey" class="form-control" placeholder="Your Private Key *" value="" />
+                <input type="text" id="pvtkey" class="form-control" placeholder="Your Private Key *" />
             </div>
             <br>
             <div class="form-group">
-                <input type="submit" onclick="writereg(event)" class="btnSubmit" value="LOGIN" />
+                <button type="submit" onclick="writereg()" class="btnSubmit">LOGIN</button>
             </div>
             
             </form>
@@ -107,7 +107,7 @@ function writeusr(){
 
 function writereg(){
        var pvtkey = document.getElementById('pvtkey').value;
-      $.get('/regstr',{key:pvtkey},'json');
+      $.post('/regstr',{key:pvtkey},'json');
 }
 
 

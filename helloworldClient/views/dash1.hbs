@@ -18,21 +18,24 @@
 <!------ Include the above in your HEAD tag ---------->
 
 <body class="body">
-    <div class="container">
+    <div class="container container-fluid">
         <h2><b><u>REGISTRAR DASHBOARD</u></b></h2>
-        <br><br><br>
-        <div class="file-field">
-            
+        <div class="row">
+            <div class="col-sm-1">Name</div>
+            <div class="col-sm-2">Adhar no</div>
+            <div class="col-sm-1">Property name</div>
+            <div class="col-sm-1">property Are</div>
+            <div class="col-sm-1">property location</div>
+            <div class="col-sm-3">hash</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
         </div>
-        <br><br><br>
-        <h3><b>Data :</b></h3>
-        <br>
-        <h4>{{data}}</h4>
-        <br><br><br>
-        <h3><b>File :</b></h3>
-        <br>
-        <h4>{{file}}</h4>
-        <br><br><br>
+      
+
+
+
+
         <a href="localhost:4000" target="_blank">Upload To IPFS</a>
         <br><br><br>
         <button type="btn btn-success" onclick="retrive_hash(event)">Click To Retrieve Hash</button>

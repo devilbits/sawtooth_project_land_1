@@ -16,8 +16,9 @@ const path   = require('path');
     callback(null, '../uploads')
   },
   filename: function(req, file, callback) {
+    let id = req.cookies.idValue;
     console.log(file);
-    callback(null,file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    callback(null,id+'-'+file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 });
 
@@ -49,22 +50,75 @@ router.get('/usr',(req,res)=>{
 })});
 
 router.get('/regstr',(req,res)=>{
-  var key = req.query.key;
-count = 0;
-cosole.log('regstr');
 
-fs.readdir("./uploads",(err, files)=> {
-  if (err) {return console.log('Unable to scan directory: ' + err);}
-  // console.log('fs readdir'); 
-  //   files.forEach(function (file) {
-  //     count = count+1;
-      
-    //   fs.readFile(file, 'utf8', (err, data)=>{
-    // if (err){console.log(err);} else {}});
-     
+   var key;
+   if(req.query.key){key = req.query.key;}
+    var count = 0;
+ var obj = {filename:[]};
+ var file_table = {};
+ var json_table = [];
+ 
+fs.readdir("../uploads",(err, files)=> {
+  if (err) {return console.log('Unable to scan directory: ' + err);} 
+    files.forEach( (file)=> {
+      count = count+1;
+      obj.filename.push(file);  
+   });
+    
+    obj.filename.forEach((file=>{
+      temp = file.split('-')[0];
+      file_table[temp]=file; }));
 
     
+   
+
+console.log('count---'+count);
+
+
+
+
+  fs.readdir("../userdata",(err, user_files)=> {
+         
+      user_files.forEach((file)=>{
+
+         var global_data = fs.readFileSync('../userdata/'+file).toString();
+         json_table.push(global_data);
+        
+
+
+      });//console.log('table1'+JSON.stringify(json_table));
+     for(i=0;i<json_table.length;i++){
+      for(j=0;j<Object.keys(file_table).length;j++){
+          if(Object.keys(file_table)[j]== JSON.parse(json_table[i]).data[0].id){
+            
+             
+            JSON.parse(json_table[i]).data[0].file = Object.values(file_table)[j];
+            console.log('1:'+JSON.stringify(Object.values(file_table)[j]));
+          }
+     console.log('2:'+JSON.stringify(JSON.parse(json_table[0]).data[0])); 
+    }console.log('3:'+JSON.stringify(JSON.parse(json_table[0]).data[0]));
+  }
+      
+        var k = JSON.parse(json_table[0])
+
+        k.data[0].t=1;
+        console.log('k'+JSON.stringify(k));
+      console.log('-----------------');
+      console.log('table1'+JSON.stringify(json_table));
+     
+            
+    }); 
+
+
+ 
     });
+
+
+
+
+
+
+res.render('dash1');
 
 
 
@@ -138,7 +192,7 @@ fs.writeFile(file_name, jsonData,{ flag: 'w' }, function (err) {
               }); 
 
 router.post('/usr1',(req,res)=>{
-
+ id = req.cookies.idValue;
      console.log('inside /usr1');
   var dir = '../uploads';
 
@@ -161,6 +215,7 @@ router.post('/usr2',(req,res)=>{
    var area = req.body.area;
    var loc = req.body.loc;
   
+
   //  console.log('before ==='+name+area+loc);
   //  if(name == null | name == undefined){dataa = "";}else{dataa=[name,area,loc];}
   //   console.log('---dataa----'+dataa);
@@ -185,11 +240,13 @@ router.post('/usr2',(req,res)=>{
 
 })
 
+
 router.post('/regstr',(req,res)=>{
   var key = req.body.key; 
-  var client = new UserClient(key);
+  console.log('//key'+key);
+  // var client = new UserClient(key);
   console.log('log in as a registrar')
-  res.send({msg:"registrat"});
+  res.cookie.key = key;
 
 })
 
