@@ -57,73 +57,42 @@ router.get('/regstr',(req,res)=>{
  var obj = {filename:[]};
  var file_table = {};
  var json_table = [];
- 
+ var test = [];
 fs.readdir("../uploads",(err, files)=> {
-  if (err) {return console.log('Unable to scan directory: ' + err);} 
-    files.forEach( (file)=> {
-      count = count+1;
-      obj.filename.push(file);  
-   });
+    if (err) {return console.log('Unable to scan directory: ' + err);} 
+    files.forEach( (file)=> {count = count+1;obj.filename.push(file);});
+    obj.filename.forEach((file=>{temp = file.split('-')[0];file_table[temp]=file; }));
     
-    obj.filename.forEach((file=>{
-      temp = file.split('-')[0];
-      file_table[temp]=file; }));
-
-    
-   
-
-console.log('count---'+count);
-
-
-
-
-  fs.readdir("../userdata",(err, user_files)=> {
-         
+    // var test = [];
+    fs.readdir("../userdata",(err, user_files)=> {   
       user_files.forEach((file)=>{
-
          var global_data = fs.readFileSync('../userdata/'+file).toString();
-         json_table.push(global_data);
-        
+         global_data = JSON.parse(global_data);
+         if(global_data.data[1]){global_data.data[0] = Object.assign(global_data.data[0],global_data.data[1]);
+        global_data.data.pop();
+          // console.log('before:'+JSON.stringify(global_data.data.pop()));
+          // console.log('----');
+          // console.log('after:'+JSON.stringify(global_data.data));
 
 
-      });//console.log('table1'+JSON.stringify(json_table));
+        }
+         json_table.push(global_data);});
+
+    json_table.forEach(x=>{test.push(x.data);})
      for(i=0;i<json_table.length;i++){
       for(j=0;j<Object.keys(file_table).length;j++){
-          if(Object.keys(file_table)[j]== JSON.parse(json_table[i]).data[0].id){
-            
+          
+              if(Object.keys(file_table)[j]== test[i][0].id){
+           
              
-            JSON.parse(json_table[i]).data[0].file = Object.values(file_table)[j];
-            console.log('1:'+JSON.stringify(Object.values(file_table)[j]));
-          }
-     console.log('2:'+JSON.stringify(JSON.parse(json_table[0]).data[0])); 
-    }console.log('3:'+JSON.stringify(JSON.parse(json_table[0]).data[0]));
-  }
-      
-        var k = JSON.parse(json_table[0])
+            test[i][0].file = Object.values(file_table)[j];
+           }}} 
+    
+     res.render('dash1',{data:test});
 
-        k.data[0].t=1;
-        console.log('k'+JSON.stringify(k));
-      console.log('-----------------');
-      console.log('table1'+JSON.stringify(json_table));
-     
-            
-    }); 
-
-
- 
+              }); 
+   
     });
-
-
-
-
-
-
-res.render('dash1');
-
-
-
-
-
 
 /*fs.readFile(file_name, 'utf8', (err, data)=>{
     if (err){console.log(err);} else {
@@ -169,7 +138,7 @@ router.post('/usr',(req,res)=>{
  // var obj = {};
  // obj[no] = [];
  var obj = {data:[]}
-obj.data.push({id:no,name:name,hash:'not available'});
+obj.data.push({id:no,name:name,file:'not available',hash:'not available'});
 var jsonData = JSON.stringify(obj);
 file_name = '../userdata/'+no+'.json';
 res.cookie('file_name',file_name);
@@ -253,42 +222,104 @@ router.post('/regstr',(req,res)=>{
 
 
 router.post('/hash',(req,res)=>{
-  console.log('inside /hash')
+  var id = req.body.id;
+
   fs.readFile('../ipfs-upload/test1', function (err, data) {
   if (err) throw err;
-  
-  fs.appendFile('../userdata',','+data, function (err) {
-  if (err) throw err;
-  console.log('hash Saved!');
-  res.redirect('back')
-});
+    
+  fs.readdir("../userdata",(err, files)=> {   
+      files.forEach((file)=>{
+     
+        if(file.split('.')[0]==id){
+    
+        var global_data = fs.readFileSync('../userdata/'+file).toString();
+        data = data.toString();
+         global_data = JSON.parse(global_data);
+        global_data.data[0].hash=data;
+        
+        fs.writeFile("../userdata/"+file,JSON.stringify(global_data),{ flag: 'w' }, function (err) {
+          console.log('file is written');
+        })
+
+        console.log(JSON.stringify(global_data));
+        }
+      })})
 
 });
 });
 
 router.post('/block',(req,res)=>{
 var key = req.body.key;
+var id  = req.body.id;
 
+  
+  fs.readdir("../userdata",(err, files)=> { 
+    files.forEach((file)=>{
 
-  var client = new UserClient(key);
-  fs.readFile('../userdata', function (err, data) {
+      if(file.split('.')[0]==id){
+
+       fs.readFile('../userdata/'+file, function (err, data) {  
   if (err) throw err;
-  client.send_data(data);
-  console.log('data added to block')
+
+ data = JSON.parse(data);
+ let name = data.data[0].name;
+ let hash = data.data[0].hash;
+ let property_name = data.data[1].property_name;
+ let property_area = data.data[1].property_area;
+ let property_location = data.data[1].property_location;
+ console.log([id,name,property_name,property_area,property_location]);
+ var client = new UserClient(key,id,name,property_name,property_area,property_location);
+  client.send_data([id,name,property_name,property_area,property_location,hash]);
+  // fs.unlinkSync('../userdata/'+file);
+
   
 
- removeDir("./uploads", function () { console.log("data removed"); });
+ //removeDir("./uploads", function () { console.log("data removed"); });
 
-});});
+});}
+
+
+
+
+    });
+
+   });
+
+ });
 router.post('/rjct',(req,res)=>{
-  fs.writeFile('../userdata', "", function (err) {
-                if (err) throw err;
-                console.log('user data removed');
-                });
-  fs.writeFile('../ipfs-upload/test1',"", function (err) {
-                if (err) throw err;
-                console.log('ipfs hash replaced');
-                });                          
+
+  var id  = req.body.id;
+   fs.readdir("../userdata",(err, files)=> { 
+    files.forEach((file)=>{
+
+      if(file.split('.')[0]==id){
+        fs.unlink('../userdata/'+file,(err)=>{});
+      console.log('../userdata/'+file);
+      }})})
+   fs.readdir("../uploads",(err, files)=> { 
+    files.forEach((file)=>{
+
+      if(file.split('-')[0]==id){
+        fs.unlink('../uploads/'+file,(err)=>{});
+      }})})
+                       
 });
+
+router.get('/dd1',async (req,res)=>{
+  console.log('111111');
+  
+  //var client = new UserClient(null,null,null,null,null,null);
+  var client = new UserClient(req.cookies.key ,'1','1','1','1','1');
+  console.log('111112');
+  var t = await client.getData();
+  
+
+   t.data.forEach(dat=> {
+    if(!dat.data) return;
+    let decoddat = Buffer.from(dat.data, 'base64').toString();
+     console.log('***/'+decoddat);
+})
+
+})
 
 module.exports = router;

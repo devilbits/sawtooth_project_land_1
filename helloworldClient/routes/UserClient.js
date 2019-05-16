@@ -16,14 +16,17 @@ function hash(v) {
 }
 
 class UserClient{
-  constructor(key1){
-    if(key1){prkey=key1;}
-    else if(key1==undefined | key1==null){key1=prkey;}
+  constructor(key,id,name,property_name,property_area,property_location){
+    if(key){prkey=key;}
+    else if(key==undefined | key==null){key=prkey;}
     const context = createContext('secp256k1');
-    const secp256k1pk = Secp256k1PrivateKey.fromHex(key1.trim());
+    console.log('key111111:'+key);
+    const secp256k1pk = Secp256k1PrivateKey.fromHex(key.trim());
     this.signer = new CryptoFactory(context).newSigner(secp256k1pk);
     this.publicKey = this.signer.getPublicKey().asHex();
-    this.address = hash("landreg").substr(0, 6) + hash(this.publicKey).substr(0, 64);
+    //this.address = hash("landreg").substr(0, 6) + hash(this.publicKey).substr(0, 64);
+   this.address = hash(FAMILY_NAME).substr(0, 6) +hash(property_location).substr(0,10)+hash(property_area).substr(0,10)+hash(property_name).substr(0,10)+hash(this.publicKey).substr(0, 34);;
+
     console.log("Storing at: " + this.address);
     
   }
@@ -37,6 +40,7 @@ send_data(values){
   var inputAddressList = [address];
   var outputAddressList = [address];
   payload = values;
+  console.log('payload'+payload);
   var encode =new TextEncoder('utf8');
   const payloadBytes = encode.encode(payload)
   const transactionHeaderBytes = protobuf.TransactionHeader.encode({
@@ -129,7 +133,7 @@ async _send_to_rest_api(batchListBytes){
   }
 
  async getData() {
-    let addr = hash("landreg").substr(0, 6) + hash(this.publicKey).substr(0, 64);
+    let addr = hash("landreg").substr(0, 6);
     return this.getState(addr, true);
   }
 

@@ -8,7 +8,11 @@
         margin-bottom: 5%;
         background: #f05837;
         padding: 5% 5%;
+
     }
+    table, th, td {
+  border: 1px solid black;
+}
 
 </style>
 
@@ -19,39 +23,50 @@
 
 <body class="body">
     <div class="container container-fluid">
-        <h2><b><u>REGISTRAR DASHBOARD</u></b></h2>
-        <div class="row">
-            <div class="col-sm-1">Name</div>
-            <div class="col-sm-2">Adhar no</div>
-            <div class="col-sm-1">Property name</div>
-            <div class="col-sm-1">property Are</div>
-            <div class="col-sm-1">property location</div>
-            <div class="col-sm-3">hash</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-1"></div>
-        </div>
-      
+    <table >
+        <tr>
+            <th>Name</th>
+            <th>Adhar</th>
+            <th>Property name</th>
+            <th>Property area</th>
+            <th>property location</th>
+            <th>File name</th>
+            <th>File hash</th>
+           
 
+        </tr>
+        
+    {{#each data}}
+        <tr>    
+        {{#each this}}
+            <td>{{name}}</td>
+            <td>{{id}}</td>
+            <td>{{property_name}}</td>
+            <td>{{property_area}}</td>
+            <td>{{property_location}}</td>
+            <td>{{file}}</td>
+            <td>{{hash}}</td>
+           
+        {{/each}}
+        </tr>       
+    {{/each}}
+        
 
+    </table> 
+    <br><br><br>
+    <form>
+            <input type="text" id="adhno" placeholder="enter users adhar number" />
+            <button class="btn btn-success" onclick="retrive_hash(event)">retrive hash</button><br>
+            <input type="text" id="adhno1" placeholder="enter users adhar number" />
+            <input type="text" id="key" placeholder="enter registrar pvt key" />
+            <button class="btn btn-success" onclick="send_to_block(event)">Add to block</button><br>
+            <input type="text" id="adhno2" placeholder="enter users adhar number" />
+            <button class="btn btn-danger" onclick="reject()">Reject</button>
+            <button class="btn btn-danger" onclick="reject1()">dd1</button>
 
+    </form>
 
-        <a href="localhost:4000" target="_blank">Upload To IPFS</a>
-        <br><br><br>
-        <button type="btn btn-success" onclick="retrive_hash(event)">Click To Retrieve Hash</button>
-        <br><br><br>
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1"></span>
-            </div>
-            <input type="text" id="key" class="form-control" placeholder="Private Key">
-        </div>
-        <br>
-        <button class="btn btn-success" id="test" onclick="send_to_block(event)">Send To Block</button>
-        &nbsp &nbsp &nbsp
-        <button class="btn btn-danger" onclick="reject()">REJECT</button>
-
-    </div>
+        
 
 </body>
 
@@ -60,17 +75,24 @@
 <script>
 
     function retrive_hash(event) {
+        var id = document.getElementById('adhno').value;
         event.preventDefault();
-        $.post('/hash');
+        $.post('/hash',{id:id},'json');
     };
     function send_to_block(e) {
         e.preventDefault();
         var key = document.getElementById('key').value;
+        var id = document.getElementById('adhno1').value;
 
-        $.post('/block', { key: key }, 'json');
+        $.post('/block', { key: key,id:id }, 'json');
 
     };
     function reject(event) {
-        $.post('/rjct');
+        var id = document.getElementById('adhno2').value;
+        $.post('/rjct',{id:id});
+    };
+     function reject(event) {
+        
+        $.get('/dd1');
     };
 </script>
