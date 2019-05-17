@@ -306,19 +306,118 @@ router.post('/rjct',(req,res)=>{
 });
 
 router.get('/dd1',async (req,res)=>{
-  console.log('111111');
+ 
   
   //var client = new UserClient(null,null,null,null,null,null);
   var client = new UserClient(req.cookies.key ,'1','1','1','1','1');
-  console.log('111112');
-  var t = await client.getData();
+  var data = await client.getData();
   
-
-   t.data.forEach(dat=> {
+   var list = [];
+   data.data.forEach(dat=> {
     if(!dat.data) return;
     let decoddat = Buffer.from(dat.data, 'base64').toString();
-     console.log('***/'+decoddat);
+    let data1 = decoddat.split(',');
+    list.push({
+         
+         id:data1[0],
+         name:data1[1],
+         property_name:data1[2],
+         property_area:data1[3],
+         property_location:data1[4],
+         hash:data1[5]
+      });
+
+
+
+});   
+   console.log('dd1 data='+list);
+     res.render('dd1',{data:list});
 })
+
+
+
+
+
+router.get('/dd2',async (req,res)=>{
+
+  
+ var adhar = req.cookies.idValue;
+var a = [];
+ fs.readdir("../userdata",(err, files)=> { 
+    files.forEach((file)=>{
+
+      if(file.split('.')[0]==adhar){
+         fs.readFile('../userdata/'+file,(err,data)=>{
+          console.log('::::'+JSON.stringify(JSON.parse(data).data[1].property_area));
+          let loc =JSON.parse(data).data[1].property_location;
+          let area = JSON.parse(data).data[1].property_area;
+          a.push({loc:loc,area:area}); 
+           var client = new UserClient('a88090bb39f526e0b88553f0502248ad7a7dec986c11d2b8ef536e91d3d080c3' ,'1','1','1','1','1');
+           client.getData1(loc,area).then(data=>{
+
+
+
+                 var list = [];
+                 var userlist = [];
+                 var otherslist = [];
+                 console.log('data*********='+JSON.stringify(data));
+                 data.data.forEach(dat=> {
+
+                 if(!dat.data) return;
+    let decoddat = Buffer.from(dat.data, 'base64').toString();
+    let data1 = decoddat.split(',');
+    list.push({
+         
+         id:data1[0],
+         name:data1[1],
+         property_name:data1[2],
+         property_area:data1[3],
+         property_location:data1[4],
+         hash:data1[5]
+      });
+     
+});
+
+list.forEach(x=>{
+      
+     if(x.id!=undefined){if(req.cookies.idValue==x.id){userlist.push(x);}else{otherslist.push(x);}}
+    })
+
+
+res.render('dd2',{usrlst:userlist,othrlst:otherslist}); 
+            })
+          
+
+         })
+         
+      } }) 
+
+  })
+
+
+
+ 
+  
+
+ });
+
+
+router.post('/reqBuy',(req,res)=>{
+  var usrId = req.body.usrid;
+  var clientId = req.body.clientid;
+  var prop_name = req.body.property_name;
+ filename = 'transfer-'+'usrId-'+'clientId'+'.json'
+
+     fs.writeFile(filename,{usrId,clientId,},{ flag: 'w' }, function (err) {
+                if (err) {console.log('../userdata folder is not available');throw err};
+                console.log('Replaced!');
+                
+                });                  
+                res.send({msg:'connected'});  
+
+                
+              
+
 
 })
 

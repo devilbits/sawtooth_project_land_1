@@ -1,0 +1,88 @@
+<style>   
+   table, th {
+  border:  solid black;
+}
+
+</style>
+
+<table>    
+    <th>users proprty</th>
+    
+        <tr>
+            <td>name</td>
+            <td>id</td>
+            <td>property_name</td>
+            <td>property_area</td>
+            <td>property_location</td>
+            <td>hash</td>
+        </tr>
+    {{#each usrlst}}    
+        <tr>    
+       
+            <td>{{name}}</td>
+            <td>{{id}}</td>
+            <td>{{property_name}}</td>
+            <td>{{property_area}}</td>
+            <td>{{property_location}}</td>
+            <td>{{hash}}</td>
+           
+       
+        </tr>       
+    {{/each}}
+
+</table>    
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+<table>    
+    <th>Properties available</th>
+    {{#each othrlst}}
+        <tr>
+            <td>name</td>
+            <td>property_name</td>
+            <td>property_area</td>
+            <td>property_location</td>
+        </tr>
+
+
+        <tr>    
+       
+            <td>{{name}}</td>
+            <td>{{property_name}}</td>
+            <td>{{property_area}}</td>
+            <td>{{property_location}}</td>
+
+           
+       
+        </tr>       
+    {{/each}}
+
+</table>   
+
+<br><br><br>
+<br><br><br>
+
+<form>
+<input type="text" id="usrid" placeholder="enter user adhar">
+<input type="text" id="clientid" placeholder=" enter property owners name">
+<input type="text" id="prop_name" placeholder=" enter property name">
+
+
+<button type="button" onclick="req_buy()">request</button>
+</form>
+
+
+
+<script>
+    function req_buy(){
+
+        var usrid = document.getElementById("usrid").value;
+        var clientid = document.getElementById("clientid").value;
+        var prop_name = document.getElementById("prop_name").value;
+        $.post('/reqBuy',{usrid:usrid,clientid:clientid,prop_name:prop_name},'json');
+    }
+
+
+
+</script>

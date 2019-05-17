@@ -138,4 +138,12 @@ async _send_to_rest_api(batchListBytes){
   }
 
 
+ async getData1(loc,area) {
+  console.log('loc111:'+loc);
+    let addr = hash("landreg").substr(0, 6)+hash(loc).substr(0, 10);+hash(area).substr(0, 10);
+    return this.getState(addr, true);
+  }
+
+
+
 }module.exports.UserClient = UserClient;
