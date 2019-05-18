@@ -61,8 +61,13 @@
             <input type="text" id="key" placeholder="enter registrar pvt key" />
             <button class="btn btn-success" onclick="send_to_block(event)">Add to block</button><br>
             <input type="text" id="adhno2" placeholder="enter users adhar number" />
-            <button class="btn btn-danger" onclick="reject()">Reject</button>
-            <button class="btn btn-danger" onclick="reject1()">dd1</button>
+            <button class="btn btn-danger" onclick="reject()">Reject</button></form>
+            <form action="/dd1" method="GET">
+            <button  type="submit" class="btn btn-danger" onclick="reject1()">dd1</button>
+
+    </form>
+    <form action="/transfer" method="GET">
+            <button  type="submit" class="btn btn-danger" onclick="transfer()">transfer</button>
 
     </form>
 
@@ -94,5 +99,9 @@
      function reject1(event) {
         
         $.get('/dd1');
+    };
+      function transfer(event) {
+        
+        $.get('/transfer');
     };
 </script>

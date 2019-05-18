@@ -67,8 +67,12 @@ fs.readdir("../uploads",(err, files)=> {
     fs.readdir("../userdata",(err, user_files)=> {   
       user_files.forEach((file)=>{
          var global_data = fs.readFileSync('../userdata/'+file).toString();
+
          global_data = JSON.parse(global_data);
-         if(global_data.data[1]){global_data.data[0] = Object.assign(global_data.data[0],global_data.data[1]);
+        
+      //if(global_data.data[1]!=undefined) Cannot read property '1' of undefined delete the files in userdata and it will work
+       
+         if(global_data.data[1]!=undefined){global_data.data[0] = Object.assign(global_data.data[0],global_data.data[1]);
         global_data.data.pop();
           // console.log('before:'+JSON.stringify(global_data.data.pop()));
           // console.log('----');
@@ -245,7 +249,7 @@ router.post('/hash',(req,res)=>{
         }
       })})
 
-});
+});res.redirect('back');
 });
 
 router.post('/block',(req,res)=>{
@@ -270,7 +274,7 @@ var id  = req.body.id;
  console.log([id,name,property_name,property_area,property_location]);
  var client = new UserClient(key,id,name,property_name,property_area,property_location);
   client.send_data([id,name,property_name,property_area,property_location,hash]);
-  // fs.unlinkSync('../userdata/'+file);
+   fs.unlinkSync('../userdata/'+file);
 
   
 
@@ -284,7 +288,7 @@ var id  = req.body.id;
     });
 
    });
-
+res.redirect('back');
  });
 router.post('/rjct',(req,res)=>{
 
@@ -309,13 +313,14 @@ router.get('/dd1',async (req,res)=>{
  
   
   //var client = new UserClient(null,null,null,null,null,null);
-  var client = new UserClient(req.cookies.key ,'1','1','1','1','1');
+  var client = new UserClient('a88090bb39f526e0b88553f0502248ad7a7dec986c11d2b8ef536e91d3d080c3' ,'1','1','1','1','1');
   var data = await client.getData();
-  
+  console.log('stat1==='+JSON.stringify(data));
    var list = [];
    data.data.forEach(dat=> {
     if(!dat.data) return;
     let decoddat = Buffer.from(dat.data, 'base64').toString();
+    console.log('state::::='+decoddat);
     let data1 = decoddat.split(',');
     list.push({
          
@@ -330,7 +335,7 @@ router.get('/dd1',async (req,res)=>{
 
 
 });   
-   console.log('dd1 data='+list);
+   console.log('dd1 data='+JSON.stringify(list));
      res.render('dd1',{data:list});
 })
 
@@ -348,7 +353,7 @@ var a = [];
 
       if(file.split('.')[0]==adhar){
          fs.readFile('../userdata/'+file,(err,data)=>{
-          console.log('::::'+JSON.stringify(JSON.parse(data).data[1].property_area));
+         
           let loc =JSON.parse(data).data[1].property_location;
           let area = JSON.parse(data).data[1].property_area;
           a.push({loc:loc,area:area}); 
@@ -360,7 +365,7 @@ var a = [];
                  var list = [];
                  var userlist = [];
                  var otherslist = [];
-                 console.log('data*********='+JSON.stringify(data));
+                 
                  data.data.forEach(dat=> {
 
                  if(!dat.data) return;
@@ -403,12 +408,16 @@ res.render('dd2',{usrlst:userlist,othrlst:otherslist});
 
 
 router.post('/reqBuy',(req,res)=>{
-  var usrId = req.body.usrid;
-  var clientId = req.body.clientid;
-  var prop_name = req.body.property_name;
- filename = 'transfer-'+'usrId-'+'clientId'+'.json'
+  var buyerid = req.body.buyerid;
+  var buyername = req.body.usrname;
+  var sellername = req.body.sellername;
+  var prop_name = req.body.prop_name;
+  var prop_area = req.body.prop_area;
+  var prop_loc = req.body.prop_loc;
+ filename = '../transferdata/'+'transfer-'+buyerid+'-'+sellername+'-to'+'.json';
+ data = {buyerid:buyerid,buyername:buyername,sellername:sellername,prop_name:prop_name,prop_area:prop_area,prop_loc:prop_loc,sellerid:'not set'}
 
-     fs.writeFile(filename,{usrId,clientId,},{ flag: 'w' }, function (err) {
+     fs.writeFile(filename,JSON.stringify(data),{ flag: 'w' }, function (err) {
                 if (err) {console.log('../userdata folder is not available');throw err};
                 console.log('Replaced!');
                 
@@ -420,5 +429,119 @@ router.post('/reqBuy',(req,res)=>{
 
 
 })
+//outer.post('/req_buy_list1',(req,res)=>{let name = req.body.name;res.cookie('idName',name);   })
+router.get('/req_buy_list',(req,res)=>{
+     
+     let name = req.query.name;
+
+     if(name!=undefined){res.cookie('tempName',name);}else{name=req.cookies.tempName;}
+     console.log('111111idname='+name+',temp='+req.cookies.tempName);
+     var a = [];
+     var b = [];
+    fs.readdir("../transferdata",(err, files)=> { 
+     
+    files.forEach((file)=>{
+      
+          if(file.split('-')[0]=='transfer'){
+          
+          var global_data = fs.readFileSync('../transferdata/'+file).toString();
+          console.log('global_data=='+global_data);
+          global_data = JSON.parse(global_data);
+          console.log('11');
+          if(global_data[0]==undefined){
+            console.log('12');
+            console.log('seller:'+global_data.sellername);
+          if(name && name==global_data.sellername){
+            console.log('--------------------*-**-*-');
+           a.push(global_data);
+          }}
+          
+
+
+}
+    });
+    console.log('aaaaaaaaaaaaaaa:'+JSON.stringify(a));
+    res.render('req_buy',{data:a});
+    
+  });//res.render('req_buy',{data:b});
+    
+})
+router.post('/req_buy_list',(req,res)=>{
+  console.log('running');
+  var userid  = req.body.id;
+  var clientid= req.body.clientid;
+  var name= req.body.name;
+     var a = [];
+    fs.readdir("../transferdata",(err, files)=> { 
+     
+    files.forEach((file)=>{
+
+          if(file.split('-')[0]=='transfer'){
+              if(file.split('-')[1]==clientid && file.split('-')[2]==name){
+                // console.log('file.split('-')[1]==clienti==='+file.split('-')[1]==clientid);
+                // console.log('file.split('-')[2]==name======'+file.split('-')[2]==name);
+          
+          var global_data = fs.readFileSync('../transferdata/'+file).toString();
+          global_data = JSON.parse(global_data);
+           a.push(global_data);
+      
+           a[0].clientno = userid;
+           file_name = "../transferdata/"+file;
+           fs.writeFile(file_name, JSON.stringify(a), 'utf8', (err)=>{if(err)console.log('userdata json unavilable')});
+         }
+
+}
+});
+   console.log('aaaaaaaaa:'+JSON.stringify(a));
+});res.redirect('/');
+})
+
+
+
+
+router.get('/transfer',(req,res)=>{
+  var a = [];
+ fs.readdir("../transferdata",(err, files)=> { 
+     
+    files.forEach((file)=>{ 
+    var global_data = fs.readFileSync('../transferdata/'+file).toString();
+    global_data = JSON.parse(global_data);
+    console.log('2;;;;='+JSON.stringify(global_data));
+      console.log('2;;;;[0]='+JSON.stringify(global_data[0]));
+    if(global_data[0] && global_data[0].clientno!='not set'){
+    console.log('789===:'+global_data[0].clientno);
+     a.push(global_data);
+  }
+    });console.log('abbaa:'+JSON.stringify(a));
+    res.render('transfer',{data:a});
+  })
+ 
+
+})
+router.post('/chaneg_owner',(req,res)=>{
+  var pvtkey = req.body.pvtkey;
+  var buyername = req.body.buyername;
+  var buyerid = req.body.buyerid;
+  var sellername = req.body.sellername;
+  var sellerid = req.body.sellerid;
+  var prop_name = req.body.prop_name;
+  var prop_area = req.body.prop_area;
+  var prop_loc = req.body.prop_loc;
+
+var client = new UserClient(key,buyerid,buyername,property_name,property_area,property_location);
+
+
+UserClient(key,id,name,property_name,property_area,property_location);
+client.send_data([buyerid,buyername,sellername,sellerid,property_name,property_area,property_location]);
+fs.readdir("../transferdata",(err, files)=> { 
+    files.forEach((file)=>{
+          if(file.split('-')[1]==buyerid && file.split('-')[2]==sellername){
+             fs.unlinkSync('../transferdata/'+file);
+          }
+     })})
+
+
+})
+
 
 module.exports = router;

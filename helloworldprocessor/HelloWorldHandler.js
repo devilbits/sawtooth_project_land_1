@@ -32,11 +32,14 @@ class landregHandler extends TransactionHandler{
 
     apply(transactionProcessRequest, context){
         var msg = decoder.decode(transactionProcessRequest.payload);
+        this.publicKey = header.signerPublicKey;
         msg = msg.toString().split(',');
-        let header = transactionProcessRequest.header
-        this.publicKey = header.signerPublicKey
-        console.log('msg ====================================' + msg);
-        console.log('hash ===================================='+ msg[0]);
+        if(msg.length==7){
+            adrs = hash(FAMILY_NAME).substr(0, 6)+ hash(msg[6]).substr(0,10)+hash(msg[5]).substr(0,10)+hash(msg[4]).substr(0,10)+hash(this.publicKey).substr(0, 34);
+            deletestatedata(context,adrs);
+            return landDataToStore(context, adrs, msg);
+        }
+        let header = transactionProcessRequest.header;
         //this.address = hash(FAMILY_NAME).substr(0, 6) + hash(this.publicKey).substr(0, 64);
           this.address = hash(FAMILY_NAME).substr(0, 6) +hash(msg[4]).substr(0,10)+hash(msg[3]).substr(0,10)+hash(msg[2]).substr(0,10)+hash(this.publicKey).substr(0, 34);
         return landDataToStore(context, this.address, msg);
