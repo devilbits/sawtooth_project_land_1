@@ -519,6 +519,7 @@ router.get('/transfer',(req,res)=>{
 
 })
 router.post('/chaneg_owner',(req,res)=>{
+  console.log('preparing to change ownership');
   var pvtkey = req.body.pvtkey;
   var buyername = req.body.buyername;
   var buyerid = req.body.buyerid;
@@ -527,12 +528,15 @@ router.post('/chaneg_owner',(req,res)=>{
   var prop_name = req.body.prop_name;
   var prop_area = req.body.prop_area;
   var prop_loc = req.body.prop_loc;
+console.log(buyername+'-'+buyerid+'-'+sellername+'-'+sellerid+'-'+prop_name+'-'+prop_area+'-'+prop_loc);
+console.log('brfore');
+var client = new UserClient(pvtkey,buyerid,buyername,prop_name,prop_area,prop_loc);
+//var client = new UserClient(key,id,name,property_name,property_area,property_location);
+console.log('after');
 
-var client = new UserClient(key,buyerid,buyername,property_name,property_area,property_location);
 
-
-UserClient(key,id,name,property_name,property_area,property_location);
-client.send_data([buyerid,buyername,sellername,sellerid,property_name,property_area,property_location]);
+client.send_data([buyerid,buyername,sellername,sellerid,prop_name,prop_area,prop_loc]);
+console.log('brfore1');
 fs.readdir("../transferdata",(err, files)=> { 
     files.forEach((file)=>{
           if(file.split('-')[1]==buyerid && file.split('-')[2]==sellername){

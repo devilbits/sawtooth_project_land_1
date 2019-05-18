@@ -53,6 +53,10 @@
         
 
     </table> 
+
+
+    <br><br>
+    <a href="localhost:4000" target="_blank">Go to ipfs upload module</a>
     <br><br><br>
     <form>
             <input type="text" id="adhno" placeholder="enter users adhar number" />
@@ -62,10 +66,12 @@
             <button class="btn btn-success" onclick="send_to_block(event)">Add to block</button><br>
             <input type="text" id="adhno2" placeholder="enter users adhar number" />
             <button class="btn btn-danger" onclick="reject()">Reject</button></form>
+            <br><br><br>
+            <p>click view data to see data added to the state.Report illeagel entry.</p>
             <form action="/dd1" method="GET">
-            <button  type="submit" class="btn btn-danger" onclick="reject1()">dd1</button>
+            <button  type="submit" class="btn btn-danger" onclick="reject1()">view data</button>
 
-    </form>
+    </form> <br><br><br><p>enter to see ownership transfer requests</p>
     <form action="/transfer" method="GET">
             <button  type="submit" class="btn btn-danger" onclick="transfer()">transfer</button>
 
