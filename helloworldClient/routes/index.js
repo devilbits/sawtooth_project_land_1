@@ -30,8 +30,9 @@ router.get('/', function(req, res, next) {
 router.get('/usr',(req,res)=>{
 
   var file_name =req.cookies.file_name; 
-
+  
   fs.readFile(file_name, (err, data) => {
+      data = JSON.parse(data);
       var field_data = data['data'];
       field_data = field_data[0];
       name = JSON.stringify(field_data.name);
@@ -183,9 +184,8 @@ router.post('/regstr',(req,res)=>{
 router.post('/hash',(req,res)=>{
     var id = req.body.id;
 
-    fs.readFile('../ipfs-upload/test1', function (err, data) {
+    fs.readFile('../ipfs-upload/test1',function (err, data) {
         if (err) throw err;
-    
         fs.readdir("../userdata",(err, files)=> {   
             files.forEach((file)=>{
      
@@ -193,9 +193,9 @@ router.post('/hash',(req,res)=>{
     
                   var global_data = fs.readFileSync('../userdata/'+file).toString();
                   data = data.toString();
+                  //console.log('data='+data+',global_data='+global_data);
                   global_data = JSON.parse(global_data);
                   global_data.data[0].hash=data;
-        
                   fs.writeFile("../userdata/"+file,JSON.stringify(global_data),{ flag: 'w' }, function (err) {})
               }
             });
