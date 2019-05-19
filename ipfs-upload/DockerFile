@@ -1,0 +1,17 @@
+FROM ubuntu:xenial
+
+
+RUN apt-get update \
+    && apt-get -y install curl 
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && apt-get install -y nodejs
+
+CMD npm install -y && npm start
+
+EXPOSE 4000
+
+
+
+
+
